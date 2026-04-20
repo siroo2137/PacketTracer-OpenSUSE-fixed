@@ -23,7 +23,7 @@ Make sure the `.deb` file is saved to your **`/home`** directory.
 Clone this repository or download the script directly to your system:
 
 ```bash
-git clone https://github.com/farhatizakaria/PacketTracer-OpenSUSE.git
+git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
 ```
 
 ### 3. Run the Script ▶️
@@ -39,8 +39,9 @@ Now, you can run the script. This will automatically install Cisco Packet Tracer
 - Extracting and installing Cisco Packet Tracer.
 
 ```bash
-chmod +x script2.sh
-./script2.sh
+cd PacketTracer-OpenSUSE-fixed
+chmod +x setup.sh
+./setup.sh
 ```
 The script will automatically handle everything. It will search for the .deb file, uninstall any existing version of Packet Tracer, install the required dependencies, and set up Cisco Packet Tracer for you.
 
@@ -48,7 +49,7 @@ The script will automatically handle everything. It will search for the .deb fil
 If you need to uninstall Cisco Packet Tracer later, simply run the script with the --uninstall flag. This will remove Cisco Packet Tracer and all related files from your system:
 
 ```
-./script2.sh --uninstall
+./setup.sh --uninstall
 ```
 
 The script will:
