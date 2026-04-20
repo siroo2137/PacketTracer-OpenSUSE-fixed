@@ -114,7 +114,7 @@ EOF
     fi
 
     echo -e "\n${Green}${Bold}Installation complete.${Color_Off}"
-    echo "Run: /opt/pt/packettracer"
+    echo "Run: /opt/pt/packettracer.AppImage"
 }
 
 uninstall() {
