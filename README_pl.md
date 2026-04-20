@@ -1,5 +1,7 @@
 # Skrypt instalacyjny Cisco Packet Tracer dla openSUSE
 
+[🇬🇧 English](README.md) | [🇵🇱 Polski](README_pl.md)
+
 Ten skrypt automatyzuje instalację i deinstalację **Cisco Packet Tracer** na systemie **openSUSE Linux**. Jedynym wymaganiem jest umieszczenie pliku instalacyjnego **Packet Tracer `.deb`** w dowolnym katalogu w `/home` z domyślną nazwą pliku.
 
 ## Wymagania wstępne ⚙️
