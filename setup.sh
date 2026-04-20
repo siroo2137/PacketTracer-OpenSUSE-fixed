@@ -62,7 +62,7 @@ install() {
         libqt5-qtsvg-devel \
         libqt5-qtwebchannel-devel \
         libqt5-qtwebsockets-devel \
-        libfreetype6
+        libfreetype6-2.14.2-lp156.240.1.x86_64
 
     workdir=$(mktemp -d)
     trap 'rm -rf "$workdir"' EXIT
