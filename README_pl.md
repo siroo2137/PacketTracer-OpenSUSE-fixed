@@ -18,15 +18,7 @@ Pobierz instalator **Cisco Packet Tracer `.deb`** z poniższego źródła:
 
 Upewnij się, że plik `.deb` został zapisany w katalogu **`/home`**.
 
-### 2. Sklonuj skrypt 📂
-
-Sklonuj repozytorium lub pobierz skrypt bezpośrednio na swój system:
-
-```bash
-git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
-```
-
-### 3. Uruchom skrypt ▶️
+### 2. Zainstaluj wymagane pakiety
 
 Zainstaluj pakiet binutils oraz git:
 
@@ -34,6 +26,15 @@ Zainstaluj pakiet binutils oraz git:
 sudo zypper install binutils git
 ```
 
+### 3. Sklonuj skrypt 📂
+
+Sklonuj repozytorium lub pobierz skrypt bezpośrednio na swój system:
+
+```bash
+git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
+```
+
+### 3. Uruchom skrypt▶️
 Następnie uruchom skrypt. Automatycznie zainstaluje on Cisco Packet Tracer poprzez:
 
 * Wyszukanie instalatora `.deb` w katalogu `/home`.
