@@ -1,118 +1,146 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
 Red="\033[0;31m"
 Bold="\033[1m"
 Color_Off="\033[0m"
 Cyan="\033[0;36m"
 Green="\033[0;32m"
-user_name=$(who | cut -d ' ' -f 1 | head -1)
-installer_search_path="/home/$user_name"
-USAGE_MESSAGE="Usage: $0 [OPTIONS]... [DIRECTORY]...
-Install Cisco Packet Tracer latest version on Fedora Linux using
-.deb provided by Cisco. To download the installer, access this link:
-<https://www.netacad.com/portal/resources/packet-tracer>
 
- -d, --directory         Directory where is the installer
- -h, --help              Show this help message and exit
- --uninstall             Uninstall Cisco Packet Tracer
+user_name="${SUDO_USER:-$USER}"
+installer_search_path="/home/$user_name"
+
+USAGE_MESSAGE="Usage: $0 [OPTIONS]... [DIRECTORY]...
+Install Cisco Packet Tracer on openSUSE using .deb package.
+
+  -d, --directory   ഡയറക്ടറി where installer is located
+  -h, --help        Show this help message
+  --uninstall       Remove Packet Tracer
 "
 
-install () {
-    # Find Cisco Packet Tracer installer
-    localized_installers=()
-    selected_installer=''
+install() {
+    echo -e "${Green}${Bold}Searching for installers in $installer_search_path...${Color_Off}\n"
 
-    echo -e "${Green}${Bold}Searching for installers in user home...${Color_Off}\n"
-    c=1
-    for installer in $(find $installer_search_path -type f -name "Cisco*Packet*.deb" -o -name "Packet*Tracer*.deb"); do
-      localized_installers[$c]=$installer
-      ((c++))
-    done
+    mapfile -t installers < <(find "$installer_search_path" -type f \( -name "Cisco*Packet*.deb" -o -name "Packet*Tracer*.deb" \))
 
-    clear
+    if [ "${#installers[@]}" -eq 0 ]; then
+        echo -e "${Red}${Bold}No Packet Tracer installer found.${Color_Off}"
+        echo -e "Download from: ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off}"
+        exit 1
+    fi
 
-    if [[ -z "${localized_installers[@]}" ]]; then
-      echo -e "\n${Red}${Bold}Packet Tracer installer not found in /home. It must be named like this: $installer_name_1.$Color_Off\n"
-      echo -e "You can download the installer from ${Cyan}https://www.netacad.com/portal/resources/packet-tracer${Color_Off} \
-    or ${Cyan}https://skillsforall.com/resources/lab-downloads${Color_Off} (login required)."
-      exit 1
-    elif [ "${#localized_installers[@]}" -eq 1 ]; then
-      selected_installer="${localized_installers[1]}"
+    if [ "${#installers[@]}" -eq 1 ]; then
+        selected_installer="${installers[0]}"
     else
-
-      echo -e "${Red}${Bold}Press CTRL + C to cancel installation.${Color_Off}\n"
-      echo -e "${Cyan}${Bold}$((c-1)) installers of Cisco Packet Tracer were found:${Color_Off}\n"
-
-      PS3="Select an installer to use: "
-
-      select installer in ${localized_installers[@]}
-      do
-        selected_installer=$installer
-        break
-      done
+        echo -e "${Cyan}${Bold}Multiple installers found:${Color_Off}"
+        select installer in "${installers[@]}"; do
+            selected_installer="$installer"
+            break
+        done
     fi
 
-    echo -e "\n${Bold}Selected installer: ${Red}${Bold}$selected_installer ${Color_Off}\n"
-    sleep 3
+    echo -e "\n${Bold}Using:${Color_Off} $selected_installer\n"
 
-    echo "Removing old version of Packet Tracer from /opt/pt"
-    uninstall
+    uninstall || true
 
-    echo "Installing dependencies"
-    sudo zypper -n install binutils libqt5-qtbase-devel libqt5-qtwebengine-devel libqt5-qtmultimedia-devel \
-        libqt5-qtnetworkauth-devel libqt5-qtscript-devel libqt5-qtspeech-devel libqt5-qtsvg-devel \
-        libqt5-qtwebchannel-devel libqt5-qtwebsockets-devel
-
-    echo "Extracting files"
-    mkdir packettracer
-    ar -x $selected_installer --output=packettracer
-    tar -xvf packettracer/control.tar.xz --directory=packettracer
-    tar -xvf packettracer/data.tar.xz --directory=packettracer
-
-    sudo cp -r packettracer/usr /
-    sudo cp -r packettracer/opt /
-    sudo sed -i 's/sudo xdg-mime/sudo -u $SUDO_USER xdg-mime/' ./packettracer/postinst
-    sudo sed -i 's/sudo gtk-update-icon-cache --force/sudo gtk-update-icon-cache -t --force/' ./packettracer/postinst
-    sudo sed -i 's/CONTENTS="$CONTENTS\\n$line"/CONTENTS="$CONTENTS\
-    $line"/' ./packettracer/postinst
-    sudo ./packettracer/postinst
-    sudo sed -i 's/packettracer/packettracer --no-sandbox args/' /usr/share/applications/cisco-pt*.desktop
-    sudo rm -rf packettracer
-}
-
-uninstall () {
-    if [ -e /opt/pt ]; then
-      echo "Uninstalling Cisco Packet Tracer."
-      sudo rm -rf /opt/pt /usr/share/applications/cisco*-pt*.desktop
-      sudo xdg-desktop-menu uninstall /usr/share/applications/cisco-pt*.desktop
-      sudo update-mime-database /usr/share/mime
-      sudo gtk-update-icon-cache -t --force /usr/share/icons/gnome
-
-      sudo rm -f /usr/local/bin/packettracer
+    echo -e "${Green}Adding required repository (if missing)...${Color_Off}"
+    if ! zypper lr | grep -q "fabio-harmony"; then
+        sudo zypper ar -f https://download.opensuse.org/repositories/home:/fabio_s:/harmony/openSUSE_Leap_15.6/ fabio-harmony
     fi
-    echo "Cisco Packet Tracer was uninstalled."
-    sleep 3
+
+    sudo zypper --gpg-auto-import-keys refresh
+
+    echo -e "${Green}Installing dependencies...${Color_Off}"
+    sudo zypper -n install \
+        binutils \
+        libqt5-qtbase-devel \
+        libqt5-qtwebengine-devel \
+        libqt5-qtmultimedia-devel \
+        libqt5-qtnetworkauth-devel \
+        libqt5-qtscript-devel \
+        libqt5-qtspeech-devel \
+        libqt5-qtsvg-devel \
+        libqt5-qtwebchannel-devel \
+        libqt5-qtwebsockets-devel \
+        libfreetype6
+
+    workdir=$(mktemp -d)
+    trap 'rm -rf "$workdir"' EXIT
+
+    echo -e "${Green}Extracting package...${Color_Off}"
+    ar -x "$selected_installer" --output="$workdir"
+    tar -xf "$workdir/control.tar."* -C "$workdir"
+    tar -xf "$workdir/data.tar."* -C "$workdir"
+
+    echo -e "${Green}Installing files...${Color_Off}"
+    sudo cp -r "$workdir/usr" /
+    sudo cp -r "$workdir/opt" /
+
+    if [ -f "$workdir/postinst" ]; then
+        sed -i 's/sudo xdg-mime/sudo -u '"$user_name"' xdg-mime/' "$workdir/postinst"
+        sed -i 's/gtk-update-icon-cache --force/gtk-update-icon-cache -t --force/' "$workdir/postinst"
+        sudo bash "$workdir/postinst"
+    fi
+
+    sudo sed -i 's/packettracer/packettracer --no-sandbox/' /usr/share/applications/cisco-pt*.desktop || true
+
+    echo -e "${Green}Setting up URL catcher (optional)...${Color_Off}"
+
+    read -rp "Temporarily replace default browser to capture login URL? [y/N]: " yn
+    if [[ "$yn" =~ ^[Yy]$ ]]; then
+        mkdir -p "/home/$user_name/.local/bin"
+        mkdir -p "/home/$user_name/.local/share/applications"
+
+        cat > "/home/$user_name/.local/bin/print-url-browser" <<EOF
+#!/usr/bin/env bash
+echo "=== Packet Tracer URL ==="
+echo "\$1"
+EOF
+
+        chmod +x "/home/$user_name/.local/bin/print-url-browser"
+
+        cat > "/home/$user_name/.local/share/applications/print-url-browser.desktop" <<EOF
+[Desktop Entry]
+Name=Print URL Browser
+Exec=/home/$user_name/.local/bin/print-url-browser %u
+Type=Application
+MimeType=x-scheme-handler/http;x-scheme-handler/https;
+Categories=Network;
+EOF
+
+        old_browser=$(xdg-settings get default-web-browser || true)
+        xdg-settings set default-web-browser print-url-browser.desktop
+
+        echo "Restore later with:"
+        echo "xdg-settings set default-web-browser $old_browser"
+    fi
+
+    echo -e "\n${Green}${Bold}Installation complete.${Color_Off}"
+    echo "Run: /opt/pt/packettracer"
 }
 
-case "$1" in
-    -h | --help)
+uninstall() {
+    if [ -d /opt/pt ]; then
+        echo "Removing Packet Tracer..."
+        sudo rm -rf /opt/pt
+        sudo rm -f /usr/share/applications/cisco-pt*.desktop
+        sudo update-mime-database /usr/share/mime || true
+        sudo gtk-update-icon-cache -t --force /usr/share/icons/gnome || true
+    fi
+}
+
+case "${1:-}" in
+    -h|--help)
         echo "$USAGE_MESSAGE"
-        exit 0
-    ;;
-
-    -d | --directory)
+        ;;
+    -d|--directory)
         installer_search_path="$2"
-        echo -e "A directory was especified for search the installer: ${Bold}$installer_search_path${Color_Off}"
-        sleep 3
         install
-    ;;
-
+        ;;
     --uninstall)
         uninstall
-    ;;
-
+        ;;
+    *)
+        install
+        ;;
 esac
-
-if [ "$1" = "" ]
-then install
-fi
