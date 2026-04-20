@@ -18,7 +18,14 @@ Download the **Cisco Packet Tracer `.deb` installer** from here:
 
 Make sure the `.deb` file is saved to your **`/home`** directory.
 
-### 2. Clone the Script 📂
+### 2. Run the Script ▶️
+
+Install binutils and git
+```bash
+sudo zypper install binutils git
+```
+
+### 3. Clone the Script 📂
 
 Clone this repository or download the script directly to your system:
 
@@ -26,12 +33,7 @@ Clone this repository or download the script directly to your system:
 git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
 ```
 
-### 3. Run the Script ▶️
-
-Install binutils and git
-```bash
-sudo zypper install binutils git
-```
+### 4. Run the Script ▶️
 Now, you can run the script. This will automatically install Cisco Packet Tracer by:
 
 - Searching for the .deb installer in the /home directory.
@@ -45,7 +47,7 @@ chmod +x setup.sh
 ```
 The script will automatically handle everything. It will search for the .deb file, uninstall any existing version of Packet Tracer, install the required dependencies, and set up Cisco Packet Tracer for you.
 
-### 4. Uninstall Cisco Packet Tracer 🧹
+### 5. Uninstall Cisco Packet Tracer 🧹
 If you need to uninstall Cisco Packet Tracer later, simply run the script with the --uninstall flag. This will remove Cisco Packet Tracer and all related files from your system:
 
 ```
