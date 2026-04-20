@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -euo pipefail
 
 Red="\033[0;31m"
 Bold="\033[1m"
