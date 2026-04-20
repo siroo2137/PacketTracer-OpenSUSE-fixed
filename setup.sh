@@ -72,7 +72,6 @@ install() {
     tar -xf "$workdir/data.tar."* -C "$workdir"
 
     echo -e "${Green}Installing files...${Color_Off}"
-    sudo cp -r "$workdir/usr" /
     sudo cp -r "$workdir/opt" /
 
     if [ -f "$workdir/postinst" ]; then
