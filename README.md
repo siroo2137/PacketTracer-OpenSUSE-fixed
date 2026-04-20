@@ -1,5 +1,7 @@
 # Cisco Packet Tracer Installation Script for openSUSE
 
+[🇬🇧 English](README.md) | [🇵🇱 Polski](README_pl.md)
+
 This script automates the installation and uninstallation of **Cisco Packet Tracer** on **openSUSE Linux**. The only requirement is that the **Packet Tracer `.deb` installer** file must be located in any directory on `/home` using the default filename.
 
 ## Prerequisites ⚙️
