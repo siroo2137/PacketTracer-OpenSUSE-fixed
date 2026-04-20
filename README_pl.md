@@ -34,7 +34,7 @@ Sklonuj repozytorium lub pobierz skrypt bezpośrednio na swój system:
 git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
 ```
 
-### 3. Uruchom skrypt▶️
+### 4. Uruchom skrypt▶️
 Następnie uruchom skrypt. Automatycznie zainstaluje on Cisco Packet Tracer poprzez:
 
 * Wyszukanie instalatora `.deb` w katalogu `/home`.
@@ -49,7 +49,7 @@ chmod +x setup.sh
 
 Skrypt automatycznie wykona wszystkie kroki. Wyszuka plik `.deb`, odinstaluje istniejącą wersję Packet Tracer, zainstaluje wymagane zależności i skonfiguruje Cisco Packet Tracer.
 
-### 4. Odinstalowanie Cisco Packet Tracer 🧹
+### 5. Odinstalowanie Cisco Packet Tracer 🧹
 
 Aby odinstalować Cisco Packet Tracer, uruchom skrypt z flagą `--uninstall`. Spowoduje to usunięcie programu oraz wszystkich powiązanych plików:
 
