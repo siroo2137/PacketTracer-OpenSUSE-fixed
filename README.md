@@ -13,9 +13,7 @@ This script automates the installation and uninstallation of **Cisco Packet Trac
 
 ### 1. Download Cisco Packet Tracer 💻
 
-Download the **Cisco Packet Tracer `.deb` installer** from one of the following sources:
-
-- [NetAcad - Packet Tracer Download](https://www.netacad.com/portal/resources/packet-tracer)
+Download the **Cisco Packet Tracer `.deb` installer** from here:
 - [Skills For All](https://skillsforall.com/resources/lab-downloads) (login required)
 
 Make sure the `.deb` file is saved to your **`/home`** directory.
