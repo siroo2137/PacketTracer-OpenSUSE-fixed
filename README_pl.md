@@ -8,7 +8,6 @@ Ten skrypt automatyzuje instalację i deinstalację **Cisco Packet Tracer** na s
 
 1. **openSUSE Linux** (testowane na openSUSE Tumbleweed-Slowroll).
 2. Plik instalacyjny **Cisco Packet Tracer `.deb`** powinien znajdować się w katalogu **`/home`**.
-3. Zainstalowany git - `sudo zypper install git`
 
 ## Kroki instalacji 🛠️
 
@@ -29,10 +28,10 @@ git clone https://github.com/siroo2137/PacketTracer-OpenSUSE-fixed.git
 
 ### 3. Uruchom skrypt ▶️
 
-Zainstaluj pakiet binutils:
+Zainstaluj pakiet binutils oraz git:
 
 ```bash
-sudo zypper install binutils
+sudo zypper install binutils git
 ```
 
 Następnie uruchom skrypt. Automatycznie zainstaluje on Cisco Packet Tracer poprzez:
